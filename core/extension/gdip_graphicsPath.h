@@ -44,7 +44,7 @@ class PathExt : public GraphicsPath {
                        pos.Y + size.Height - radius);
 
     status = CloseFigure();
-    return status;
+    return SetStatus(status);
   }
 
   Status AddBezierRounded(int radius,
@@ -68,7 +68,7 @@ class PathExt : public GraphicsPath {
                        pos.Y + size.Height - radius);
 
     status = CloseFigure();
-    return status;
+    return SetStatus(status);
   }
 
   Status AddBezierRounded(int radius,
@@ -76,10 +76,8 @@ class PathExt : public GraphicsPath {
                           IN REAL top,
                           IN REAL width,
                           IN REAL height) {
-    Point pos(left, top);
-    Size size(width, height);
-    Status status{};
-    return AddBezierRounded(radius, pos, size);
+    return SetStatus(
+        AddBezierRounded(radius, Point(left, top), Size(width, height)));
   }
 
   Status AddBezierRounded(int radius,
@@ -87,9 +85,18 @@ class PathExt : public GraphicsPath {
                           IN int top,
                           IN int width,
                           IN int height) {
-    Point pos(left, top);
-    Size size(width, height);
-    return AddBezierRounded(radius, pos, size);
+    return SetStatus(
+        AddBezierRounded(radius, Point(left, top), Size(width, height)));
+  }
+
+  Status AddBezierRounded(int radius, Rect rect) {
+    return SetStatus(AddBezierRounded(radius, Point(rect.X, rect.Y),
+                                      Size(rect.Width, rect.Height)));
+  }
+
+  Status AddBezierRounded(int radius, RectF rect) {
+    return SetStatus(AddBezierRounded(radius, PointF(rect.X, rect.Y),
+                                      SizeF(rect.Width, rect.Height)));
   }
 };
 

@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="core\dependencies\common.h" />
+    <ClInclude Include="core\dependencies\input.h" />
     <ClInclude Include="core\dependencies\interface.h" />
     <ClInclude Include="core\dependencies\process.h" />
     <ClInclude Include="core\dependencies\render.h" />
@@ -149,8 +150,11 @@
     <ClInclude Include="core\extension\win_blurHelper.h" />
     <ClInclude Include="core\environment.h" />
     <ClInclude Include="core\utils\environment.h" />
+    <ClInclude Include="core\window\manager\input_manager.h" />
+    <ClInclude Include="core\window\manager\render_manager.h" />
     <ClInclude Include="core\window\process.h" />
     <ClInclude Include="core\window\render.h" />
+    <ClInclude Include="MinecraftLauncher.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\extension\gdip_doubleBuffer.cpp" />
@@ -158,6 +162,8 @@
     <ClCompile Include="core\extension\win_registry.cpp" />
     <ClCompile Include="core\utils\environment.cpp" />
     <ClCompile Include="core\utils\node.cpp" />
+    <ClCompile Include="core\window\manager\input_manager.cpp" />
+    <ClCompile Include="core\window\manager\render_manager.cpp" />
     <ClCompile Include="core\window\process.cpp" />
     <ClCompile Include="core\window\render.cpp" />
     <ClCompile Include="MinecraftLauncher.cpp" />

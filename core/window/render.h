@@ -6,6 +6,9 @@
 #include "../utils/environment.h"
 #include "../utils/node.h"
 
+#include "./manager/render_manager.h"
+#include "./manager/input_manager.h"
+
 #ifndef _WINDOW_RENDER_H_
 #define _WINDOW_RENDER_H_
 

@@ -60,6 +60,18 @@
     <ClInclude Include="core\extension\gdip_graphicsPath.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="core\window\manager\render_manager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="core\window\manager\input_manager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MinecraftLauncher.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="core\dependencies\input.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MinecraftLauncher.cpp">
@@ -84,6 +96,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="core\extension\gdip_doubleBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="core\window\manager\render_manager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="core\window\manager\input_manager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

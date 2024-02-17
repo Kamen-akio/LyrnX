@@ -10,6 +10,11 @@ struct EnvProps {
   bool EnableDebug;
   bool EnableBlur;
   bool EnableRoundedFrame;
+
+  // todo: «®“∆÷¡ Newline=selection (windows, mac, unix)
+
+  bool EnableMacNewline;
+  bool EnableUnixNewline;
 };
 
 extern EnvProps props;

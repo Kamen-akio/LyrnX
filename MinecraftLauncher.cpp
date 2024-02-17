@@ -13,8 +13,8 @@
 
 #include "./core/extension/win_blurHelper.h"
 
-extern HWND hLauncherWnd{};
-extern HINSTANCE hLauncherInstance{};
+HWND hLauncherWnd{};
+HINSTANCE hLauncherInstance{};
 
 static std::vector<std::wstring> wc_split(const wchar_t* in,
                                           const wchar_t* delim);
@@ -78,6 +78,18 @@ static void CmdLine_ProcessFlag(std::wstring data) {
     if (flag == L"enable_rounded_frame") {
       Environment::GetEnvRaw()->EnableRoundedFrame = true;
     }
+
+    if (flag == L"enable_rounded_frame") {
+      Environment::GetEnvRaw()->EnableRoundedFrame = true;
+    }
+
+    if (flag == L"enable_mac_newline") {
+      Environment::GetEnvRaw()->EnableMacNewline = true;
+    }
+
+    if (flag == L"enable_unix_newline") {
+      Environment::GetEnvRaw()->EnableUnixNewline = true;
+    }
   }
 
   auto b = Environment::GetEnvRaw();
@@ -92,12 +104,11 @@ bool InitialWindow(int ShowType) {
 
   IS_FAIL(RegisterClassExW(&classInfo));
 
-  hLauncherWnd = CreateWindowExW(WS_EX_LAYERED, classInfo.lpszClassName,
-                                 L"LyrnX.Minecraft.Launcher", WS_VISIBLE | WS_POPUP,
-                                 CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, NULL,
-                                 NULL, hLauncherInstance, nullptr);
+  hLauncherWnd = CreateWindowExW(
+      WS_EX_LAYERED, classInfo.lpszClassName, L"LyrnX.Minecraft.Launcher",
+      WS_VISIBLE | WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, NULL, NULL,
+      hLauncherInstance, nullptr);
   ShowWindow(hLauncherWnd, ShowType);
-  ;
   return !!hLauncherWnd;
 }
 
