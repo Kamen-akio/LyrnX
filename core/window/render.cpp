@@ -63,8 +63,12 @@ LRESULT __stdcall WindowRender::WindowProcess(HWND hWnd,
   }
 
   if (isAllInited) {
-    if ((WM_MOUSEFIRST <= uMsg && uMsg <= WM_MOUSELAST) || uMsg == WM_CHAR) {
+    if (/*Mouse Event*/ (WM_MOUSEFIRST <= uMsg && uMsg <= WM_MOUSELAST) ||
+        /*Keyboard Event*/ (uMsg == WM_CHAR || uMsg == WM_KEYDOWN || uMsg == WM_KEYUP)) {
       CallUnitHandlerAsEvent(uMsg, wParam, lParam);
+
+      if (uMsg == WM_CHAR || uMsg == WM_KEYDOWN || uMsg == WM_KEYUP)
+        FlushScreen(true);
     }
   }
 

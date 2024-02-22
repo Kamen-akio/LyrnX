@@ -16,6 +16,8 @@
 #define WM_SETFOCUS_UNIT WM_USER + WM_SETFOCUS
 #define WM_KILLFOCUS_UNIT WM_USER + WM_KILLFOCUS
 
+#define WM_INPUT_UNIT WM_USER + WM_INPUT
+
 class RenderHandler abstract {
  public:
   RenderHandler(HWND window, INodeProp* root) {
