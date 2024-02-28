@@ -118,6 +118,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -144,6 +147,7 @@
     <ClInclude Include="core\dependencies\render_template.h" />
     <ClInclude Include="core\extension\gdip_graphicsPath.h" />
     <ClInclude Include="core\extension\win_registry.h" />
+    <ClInclude Include="core\utils\commandLine.h" />
     <ClInclude Include="core\utils\node.h" />
     <ClInclude Include="core\dependencies\targetver.h" />
     <ClInclude Include="core\extension\gdip_doubleBuffer.h" />
@@ -160,6 +164,7 @@
     <ClCompile Include="core\extension\gdip_doubleBuffer.cpp" />
     <ClCompile Include="core\extension\win_blurHelper.cpp" />
     <ClCompile Include="core\extension\win_registry.cpp" />
+    <ClCompile Include="core\utils\commandLine.cpp" />
     <ClCompile Include="core\utils\environment.cpp" />
     <ClCompile Include="core\utils\node.cpp" />
     <ClCompile Include="core\window\manager\input_manager.cpp" />

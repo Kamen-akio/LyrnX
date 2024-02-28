@@ -14,11 +14,24 @@ void InputContainer::Render(Graphics* graph) {
 }
 
 static bool isEmoji(wchar_t value);
+static bool isInvisibleChar(std::wstring value);
 void InputContainer::GlobalEventHandler(UINT uMsg, WPARAM wp, LPARAM lp) {
+  static HIMC hLastContext = NULL;
   auto hContext = ImmGetContext(hWindow);
 
-  if (not isFocus)
-    return;
+  if (uMsg == 271) {
+    throw 1;
+  }
+
+  if (uMsg == WM_SETFOCUS) {
+    hLastContext = ImmAssociateContext(hWindow, hContext);
+  }
+
+  if (uMsg == WM_KILLFOCUS) {
+    ImmAssociateContext(hWindow, hLastContext);
+  }
+
+  auto ret = ImmReleaseContext(hWindow, hContext);
 
   if (uMsg == WM_CHAR) {
     std::wstring inputRaw(1, static_cast<wchar_t>(wp));
@@ -104,10 +117,12 @@ void InputContainer::GlobalEventHandler(UINT uMsg, WPARAM wp, LPARAM lp) {
       return;
     }
 
+    if (isInvisibleChar(inputRaw))
+      return;
+
     context += inputRaw;
     if (not isEmoji(context.back()))
       currentPos++;
-    GetContextOfLine();
     return;
   }
 
@@ -121,7 +136,6 @@ void InputContainer::GlobalEventHandler(UINT uMsg, WPARAM wp, LPARAM lp) {
     }
   }
 
-  ImmReleaseContext(hWindow, hContext);
 }
 
 int InputContainer::GetCurrentPosition() const {
@@ -140,6 +154,11 @@ std::wstring InputContainer::GetContextOfLine() {
     lineEnd = maxSize;
 
   return context.substr(lineBegin + 2, lineEnd - lineBegin);
+};
+
+static bool isInvisibleChar(std::wstring value) {
+  return std::regex_search(value,
+                           std::wregex(L"[\\x00-\\x08\\x0B-\\x1F\\x7F]+"));
 };
 
 static bool isEmoji(wchar_t value) {

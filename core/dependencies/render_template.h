@@ -5,18 +5,10 @@
 #ifndef _DEPEND_RENDER_TEMPLATE_H_
 #define _DEPEND_RENDER_TEMPLATE_H_
 
+#define UNIT_OBJECT_COMPONENT 0x0
+
 #define IsMouseMsg(msg) WM_MOUSEFIRST <= msg&& msg <= WM_MOUSELAST
-
-#define WM_CREATE_UNIT WM_USER + WM_CREATE
-#define WM_DESTROY_UNIT WM_USER + WM_DESTROY
-#define WM_SIZE_UNIT WM_USER + WM_SIZE
-#define WM_MOVE_UNIT WM_USER + WM_MOVE
-#define WM_REPAINT_UNIT WM_USER + WM_PAINT
-
-#define WM_SETFOCUS_UNIT WM_USER + WM_SETFOCUS
-#define WM_KILLFOCUS_UNIT WM_USER + WM_KILLFOCUS
-
-#define WM_INPUT_UNIT WM_USER + WM_INPUT
+#define WM_REPAINT WM_USER + WM_PAINT
 
 class RenderHandler abstract {
  public:
@@ -31,22 +23,22 @@ class RenderHandler abstract {
   virtual void GlobalEventHandler(UINT uMsg, WPARAM wParam, LPARAM lParam){};
 
   void _handler(UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    if (uMsg == WM_CREATE_UNIT) {
+    if (uMsg == WM_CREATE) {
       rcUnit = Rect(*(Rect*)(void*)lParam);
       pUnitBitmap = new Bitmap(rcUnit.Width, rcUnit.Height);
       return;
     }
 
-    if (uMsg == WM_DESTROY_UNIT) {
+    if (uMsg == WM_DESTROY) {
       delete pUnitBitmap;
       pUnitBitmap = nullptr;
     }
 
-    if (uMsg == WM_PAINT) {
+    if (uMsg == WM_REPAINT) {
       ((Graphics*)lParam)->DrawImage(pUnitBitmap, rcUnit);
     }
 
-    if (uMsg == WM_REPAINT_UNIT) {
+    if (uMsg == WM_PAINT) {
       Graphics graphics(pUnitBitmap);
       graphics.Clear(Color::Transparent);
       graphics.SetSmoothingMode(SmoothingModeHighQuality);
@@ -59,8 +51,8 @@ class RenderHandler abstract {
       isLeftBtnDown = uMsg == WM_LBUTTONDOWN;
     }
 
-    if (uMsg == WM_SETFOCUS_UNIT || uMsg == WM_KILLFOCUS_UNIT) {
-      isFocus = (uMsg == WM_SETFOCUS_UNIT);
+    if (uMsg == WM_SETFOCUS || uMsg == WM_KILLFOCUS) {
+      isFocus = (uMsg == WM_SETFOCUS);
     }
 
     if (IsMouseMsg(uMsg)) {
@@ -88,7 +80,8 @@ class RenderHandler abstract {
 
 class RenderUnit : public RenderHandler {
  public:
-  RenderUnit(HWND window, UnitTree* tree) : RenderHandler(window, tree->GetOwner()) {
+  RenderUnit(HWND window, UnitTree* tree)
+      : RenderHandler(window, tree->GetOwner()) {
     _RenderTree = tree;
   };
 
@@ -116,6 +109,9 @@ class RenderUnit : public RenderHandler {
  private:
   RenderUnit(RenderUnit&) = delete;
   RenderUnit& operator=(RenderUnit&) = delete;
+
+ public:
+  int UnitType = UNIT_OBJECT_COMPONENT;
 
  private:
   UnitTree* _RenderTree{};

@@ -10,6 +10,8 @@
 #ifndef _WINDOW_RENDER_MANAGER_H_
 #define _WINDOW_RENDER_MANAGER_H_
 
+#define UNIT_SCREEN_COMPONENT 0x1
+
 class RenderManager : public RenderUnit {
  public:
   RenderManager(HWND window, UnitTree* tree);
@@ -17,6 +19,7 @@ class RenderManager : public RenderUnit {
   void Render(Graphics* graph);
 
  public:
+  int UnitType = UNIT_SCREEN_COMPONENT;
   bool useRounded = Environment::GetEnv().EnableRoundedFrame;
 };
 

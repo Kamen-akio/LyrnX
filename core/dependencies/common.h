@@ -8,8 +8,9 @@
 
 #include <chrono>
 #include <exception>
-#include <regex>
 #include <string>
+#include <regex>
+
 #include "interface.h"
 
 #define IS_FAIL(state)                                              \

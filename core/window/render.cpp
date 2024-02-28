@@ -16,8 +16,11 @@ bool WindowRender::Processed() {
 }
 
 static void FlushScreen(bool force = true);
-static void CallAllUnitHandler(UINT uMsg, WPARAM wParam, LPARAM lParam);
-static void CallUnitHandlerAsEvent(UINT uMsg, WPARAM wParam, LPARAM lParam);
+static void SendMessageUnitEx(INodeProp* lpNode,
+                              UINT uMsg,
+                              WPARAM wParam,
+                              LPARAM lParam);
+static void SendMessageUnit(UINT uMsg, WPARAM wParam, LPARAM lParam);
 void WindowEntry(HWND);
 void WindowExit();
 LRESULT __stdcall WindowRender::WindowProcess(HWND hWnd,
@@ -64,8 +67,10 @@ LRESULT __stdcall WindowRender::WindowProcess(HWND hWnd,
 
   if (isAllInited) {
     if (/*Mouse Event*/ (WM_MOUSEFIRST <= uMsg && uMsg <= WM_MOUSELAST) ||
-        /*Keyboard Event*/ (uMsg == WM_CHAR || uMsg == WM_KEYDOWN || uMsg == WM_KEYUP)) {
-      CallUnitHandlerAsEvent(uMsg, wParam, lParam);
+        /*Keyboard Event*/ (uMsg == WM_CHAR || uMsg == WM_KEYDOWN ||
+                            uMsg == WM_KEYUP)) {
+      SendMessageUnit(uMsg, wParam, lParam);
+      FlushScreen();
 
       if (uMsg == WM_CHAR || uMsg == WM_KEYDOWN || uMsg == WM_KEYUP)
         FlushScreen(true);
@@ -74,24 +79,6 @@ LRESULT __stdcall WindowRender::WindowProcess(HWND hWnd,
 
   return NULL;
 }
-
-/*
-class Test : public RenderUnit {
- public:
-  Test(UnitTree* tree) : RenderUnit(tree){};
-
-  void Render(Graphics* graph) {
-    graph->Clear(isLeftBtnDown ? Color::Yellow : Color::Blue);
-    graph->SetSmoothingMode(SmoothingModeHighQuality);
-
-    Font font(L"Microsoft YaHei", 16);
-    std::wstring context(isLeftBtnDown ? L"Clicked" : L"Click Me");
-    SolidBrush fontBrush(Color::Green);
-    auto a = graph->DrawString(context.c_str(), context.length(), &font,
-                               PointF(10, 10), &fontBrush);
-  }
-};
-*/
 
 void WindowEntry(HWND hWnd) {
   hWindow = hWnd;
@@ -109,8 +96,7 @@ void WindowEntry(HWND hWnd) {
   RenderTree->GetOwner()->rcNode = Rect(0, 0, 800, 600);
   RenderTree->GetOwner()->ptrUnit = mnr;
 
-  mnr->_handler(WM_CREATE_UNIT, NULL,
-                (LPARAM) & (RenderTree->GetOwner()->rcNode));
+  mnr->_handler(WM_CREATE, NULL, (LPARAM) & (RenderTree->GetOwner()->rcNode));
 
   InputContainer* child = new InputContainer(hWindow, RenderTree);
   auto prop = new INodeProp;
@@ -118,7 +104,7 @@ void WindowEntry(HWND hWnd) {
   prop->rcNode = Rect(100, 100, 100, 50);
   child->SetParent(mnr, prop);
 
-  child->_handler(WM_CREATE_UNIT, NULL, (LPARAM) & (prop->rcNode));
+  child->_handler(WM_CREATE, NULL, (LPARAM) & (prop->rcNode));
 
   FlushScreen();
 }
@@ -134,69 +120,94 @@ static void FlushScreen(bool force) {
   Graphics graph(RenderContext->GetRenderDC());
   graph.SetSmoothingMode(SmoothingModeHighQuality);
   graph.Clear(Color::Transparent);
-
+  
   if (force)
-    CallAllUnitHandler(WM_REPAINT_UNIT, NULL, NULL);
-  CallAllUnitHandler(WM_PAINT, NULL, (LPARAM)&graph);
+    SendMessageUnit(WM_PAINT, NULL, NULL);
+  SendMessageUnit(WM_REPAINT, NULL, (LPARAM)&graph);
 
   RenderContext->Flush();
 }
 
-static void _callAll(INodeProp* node, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-  if (node->ptrUnit) {
-    ((RenderUnit*)(node->ptrUnit))->_handler(uMsg, wParam, lParam);
+/*
+  New
+*/
 
-    if (node->broUnit)
-      _callAll(node->broUnit, uMsg, wParam, lParam);
+#define ISMOUSEEVEENT(msg) (WM_MOUSEFIRST <= msg and msg <= WM_MOUSELAST)
+#define ISKEYBOARDEVENT(msg) (msg == WM_CHAR)
+#define ISKEYBOARDEVENT_OPT(msg) (msg == WM_KEYDOWN or msg == WM_KEYUP)
 
-    if (node->childUnit)
-      _callAll(node->childUnit, uMsg, wParam, lParam);
+static bool _SendMessage(INodeProp* lpNode,
+                         UINT uMsg,
+                         WPARAM wParam,
+                         LPARAM lParam) {
+  static RenderUnit* lastFocusUnit{};
+
+  if (lpNode == nullptr) {
+    _SendMessage(RenderTree->GetOwner(), uMsg, wParam, lParam);
+    return false;
   }
-}
-static void CallAllUnitHandler(UINT uMsg, WPARAM wParam, LPARAM lParam) {
-  _callAll(RenderTree->GetOwner(), uMsg, wParam, lParam);
-}
 
-static bool _callEvent(INodeProp* node,
-                       UINT uMsg,
-                       WPARAM wParam,
-                       LPARAM lParam) {
-  static RenderUnit* lastFocusUnit = nullptr;
-  const auto ptMouse = Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+  if (not ISMOUSEEVEENT(uMsg)) {
 
-  bool isProc = false;
-  INodeProp* currentNode = node;
-  while (currentNode != nullptr) {
-    if (currentNode->childUnit) {
-      isProc = _callEvent(currentNode->childUnit, uMsg, wParam, lParam);
+    const auto selfPtr = (RenderUnit*)lpNode->ptrUnit;
+    if (ISKEYBOARDEVENT(uMsg) or ISKEYBOARDEVENT_OPT(uMsg)) {
+      if (selfPtr or (selfPtr->UnitType == UNIT_INPUT_COMPONENT &&
+                      selfPtr == lastFocusUnit))
+        selfPtr->_handler(uMsg, wParam, lParam);
+
+    } else {
+      selfPtr->_handler(uMsg, wParam, lParam);
     }
 
-    if (WM_MOUSEFIRST <= uMsg && uMsg <= WM_MOUSELAST) {
-      if ((not currentNode->rcNode.Contains(ptMouse)) or isProc) {
-        currentNode = currentNode->broUnit;
+    if (lpNode->broUnit != nullptr) {
+      _SendMessage(lpNode->broUnit, uMsg, wParam, lParam);
+    }
+
+    if (lpNode->childUnit != nullptr) {
+      _SendMessage(lpNode->childUnit, uMsg, wParam, lParam);
+    }
+
+    return true;
+  }
+
+  const auto ptMouse = Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+  if (ISMOUSEEVEENT(uMsg)) {
+    auto currNode = lpNode;
+
+    while (currNode != nullptr) {
+      auto isProcessed = false;
+      if (currNode->childUnit) {
+        isProcessed = _SendMessage(currNode->childUnit, uMsg, wParam, lParam);
+      }
+
+      if ((not currNode->rcNode.Contains(ptMouse)) or isProcessed) {
+        currNode = currNode->broUnit;
         continue;
       }
 
-      if (uMsg == WM_LBUTTONDOWN || uMsg == WM_MBUTTONDOWN ||
-          uMsg == WM_RBUTTONDOWN || uMsg == WM_XBUTTONDOWN) {
-        if (lastFocusUnit) {
-          lastFocusUnit->_handler(WM_KILLFOCUS_UNIT, 0,
-                                  (LPARAM)currentNode->ptrUnit);
-        }
-        ((RenderUnit*)currentNode->ptrUnit)
-            ->_handler(WM_SETFOCUS_UNIT, 0, (LPARAM)lastFocusUnit);
-        lastFocusUnit = (RenderUnit*)currentNode->ptrUnit;
+      const auto finalUnit = (RenderUnit*)currNode->ptrUnit;
+
+      if (uMsg == WM_LBUTTONDOWN) {
+        if (lastFocusUnit)
+          lastFocusUnit->_handler(WM_KILLFOCUS, NULL,
+                                  (LPARAM)currNode->ptrUnit);
+        finalUnit->_handler(WM_SETFOCUS, NULL, (LPARAM)lastFocusUnit);
+        lastFocusUnit = finalUnit;
       }
 
-      ((RenderUnit*)currentNode->ptrUnit)->_handler(uMsg, wParam, lParam);
+      finalUnit->_handler(uMsg, wParam, lParam);
       return true;
     }
-
-    ((RenderUnit*)currentNode->ptrUnit)->_handler(uMsg, wParam, lParam);
-    currentNode = currentNode->broUnit;
   }
 }
-static void CallUnitHandlerAsEvent(UINT uMsg, WPARAM wParam, LPARAM lParam) {
-  _callEvent(RenderTree->GetOwner(), uMsg, wParam, lParam);
-  FlushScreen();
+
+static void SendMessageUnitEx(INodeProp* lpNode,
+                              UINT uMsg,
+                              WPARAM wParam,
+                              LPARAM lParam) {
+  _SendMessage(lpNode, uMsg, wParam, lParam);
+}
+
+static void SendMessageUnit(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+  SendMessageUnitEx(nullptr, uMsg, wParam, lParam);
 }

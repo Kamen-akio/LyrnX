@@ -7,6 +7,7 @@
 
 #include "./core/dependencies/process.h"
 
+#include "./core/utils/commandLine.h"
 #include "./core/utils/environment.h"
 #include "./core/window/process.h"
 #include "./core/window/render.h"
@@ -16,11 +17,8 @@
 HWND hLauncherWnd{};
 HINSTANCE hLauncherInstance{};
 
-static std::vector<std::wstring> wc_split(const wchar_t* in,
-                                          const wchar_t* delim);
-
+void ProcessFlag();
 bool InitialWindow(int);
-bool InitialProgram(std::wstring);
 LRESULT __stdcall WindowMessageProc(HWND hWnd,
                                     UINT uMsg,
                                     WPARAM wParam,
@@ -31,11 +29,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       _In_ LPWSTR lpCmdLine,
                       _In_ int nCmdShow) {
   UNREFERENCED_PARAMETER(hPrevInstance);
-  UNREFERENCED_PARAMETER(lpCmdLine);
 
   hLauncherInstance = hInstance;
+  CommandLineHelper::Init(lpCmdLine);
 
-  IS_FAIL(InitialProgram(lpCmdLine));
+  ProcessFlag();
   IS_FAIL(InitialWindow(nCmdShow));
 
   MSG msg{};
@@ -49,50 +47,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
  * /// Todo, for future.
  */
 
-static void CmdLine_ProcessFlag(std::wstring data);
-bool InitialProgram(std::wstring cmdLine) {
-  auto cmdLineUnit =
-      wc_split(cmdLine.c_str(),
-               L"/[\\/-]?((\\w+)(?:[=:](\"[^\"]+\"|[^\\s\"]+))?)(?:\\s+|$)/g");
-  for (auto& item : cmdLineUnit) {
-    if (item.starts_with(L"/flag=")) {
-      CmdLine_ProcessFlag(item);
-    }
-  }
-  return true;
-}
+static void ProcessFlag() {
+  using namespace CommandLineHelper;
 
-static void CmdLine_ProcessFlag(std::wstring data) {
-  data = data.substr(strlen("/flag="));
-  const auto flags = wc_split(data.c_str(), L",");
+  Environment::GetEnvRaw()->EnableDebug =
+      IsPropertyExist(L"flag", L"enable_debug");
 
-  for (auto& flag : flags) {
-    if (flag == L"enable_debug") {
-      Environment::GetEnvRaw()->EnableDebug = true;
-    }
+  Environment::GetEnvRaw()->EnableBlur =
+      IsPropertyExist(L"flag", L"enable_blur");
 
-    if (flag == L"enable_blur") {
-      Environment::GetEnvRaw()->EnableBlur = true;
-    }
+  Environment::GetEnvRaw()->EnableRoundedFrame =
+      IsPropertyExist(L"flag", L"enable_rounded_frame");
 
-    if (flag == L"enable_rounded_frame") {
-      Environment::GetEnvRaw()->EnableRoundedFrame = true;
-    }
+  Environment::GetEnvRaw()->EnableRoundedFrame =
+      IsPropertyExist(L"flag", L"enable_rounded_frame");
 
-    if (flag == L"enable_rounded_frame") {
-      Environment::GetEnvRaw()->EnableRoundedFrame = true;
-    }
+  Environment::GetEnvRaw()->EnableMacNewline =
+      IsPropertyExist(L"flag", L"enable_mac_newline");
 
-    if (flag == L"enable_mac_newline") {
-      Environment::GetEnvRaw()->EnableMacNewline = true;
-    }
-
-    if (flag == L"enable_unix_newline") {
-      Environment::GetEnvRaw()->EnableUnixNewline = true;
-    }
-  }
-
-  auto b = Environment::GetEnvRaw();
+  Environment::GetEnvRaw()->EnableUnixNewline =
+      IsPropertyExist(L"flag", L"enable_unix_newline");
 }
 
 bool InitialWindow(int ShowType) {
@@ -127,14 +101,4 @@ LRESULT __stdcall WindowMessageProc(HWND hWnd,
       return rsProc;
   }
   return DefWindowProcW(hWnd, uMsg, wParam, lParam);
-}
-
-// string.
-
-static std::vector<std::wstring> wc_split(const wchar_t* in,
-                                          const wchar_t* delim) {
-  std::wregex re{delim};
-  return std::vector<std::wstring>{
-      std::wcregex_token_iterator(in, in + wcslen(in), re, -1),
-      std::wcregex_token_iterator()};
 }

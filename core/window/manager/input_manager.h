@@ -5,6 +5,8 @@
 #ifndef _WINDOW_INPUT_MANAGER_H_
 #define _WINDOW_INPUT_MANAGER_H_
 
+#define UNIT_INPUT_COMPONENT 0x2
+
 typedef struct __tagChunk {
   size_t size;
   size_t position;
@@ -23,6 +25,9 @@ class InputContainer : public RenderUnit {
   int GetCurrentPosition() const;
 
   std::wstring GetContextOfLine();
+
+  public:
+  int UnitType = UNIT_INPUT_COMPONENT;
 
  private:
   int currentPos{};

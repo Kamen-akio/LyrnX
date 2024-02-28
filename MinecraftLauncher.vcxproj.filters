@@ -72,6 +72,9 @@
     <ClInclude Include="core\dependencies\input.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="core\utils\commandLine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MinecraftLauncher.cpp">
@@ -102,6 +105,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="core\window\manager\input_manager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="core\utils\commandLine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
