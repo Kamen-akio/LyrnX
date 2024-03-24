@@ -15,64 +15,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\dependencies\targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\dependencies\common.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="core\environment.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\dependencies\interface.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\extension\gdip_doubleBuffer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\extension\win_blurHelper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\utils\node.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\dependencies\render_template.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\extension\win_registry.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\window\render.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\window\process.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\utils\environment.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\dependencies\process.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\dependencies\render.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\extension\gdip_graphicsPath.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\window\manager\render_manager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="core\window\manager\input_manager.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MinecraftLauncher.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="core\dependencies\input.h">
+    <ClInclude Include="core\core.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="core\utils\commandLine.h">
+    <ClInclude Include="core\main.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="core\impl\gdipDoubleBuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="core\renderManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="core\impl\multiwayTree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="control\object.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="control\IInheritable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="control\button.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="control\__index.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="control\screen.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -80,35 +56,32 @@
     <ClCompile Include="MinecraftLauncher.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="core\extension\win_blurHelper.cpp">
+    <ClCompile Include="core\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="core\extension\win_registry.cpp">
+    <ClCompile Include="core\impl\gdipDoubleBuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="core\utils\node.cpp">
+    <ClCompile Include="core\renderManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="core\window\process.cpp">
+    <ClCompile Include="core\impl\multiwayTree.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="core\window\render.cpp">
+    <ClCompile Include="control\object.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="core\utils\environment.cpp">
+    <ClCompile Include="control\IInheritable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="core\extension\gdip_doubleBuffer.cpp">
+    <ClCompile Include="control\button.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="core\window\manager\render_manager.cpp">
+    <ClCompile Include="control\screen.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="core\window\manager\input_manager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="core\utils\commandLine.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

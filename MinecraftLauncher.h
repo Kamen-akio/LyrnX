@@ -1,5 +1,5 @@
 #pragma once
-#include "./core/window/process.h"
+#include <Windows.h>
 
-extern HWND hLauncherWnd;
-extern HINSTANCE hLauncherInstance;
+extern HWND hMainWindow;
+extern HINSTANCE hProcessInstance;
