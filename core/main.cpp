@@ -1,8 +1,10 @@
-#include "./main.h"
+﻿#include "./main.h"
 
 using namespace Gdiplus;
 
 ULONG_PTR gdiplusToken{};
+
+static HWND hMainWindow;
 
 void Core::Init(HINSTANCE hInstance, int nCmdShow, HWND& hWnd) {
   GdiplusStartupInput startupInput{};
@@ -20,18 +22,31 @@ void Core::Init(HINSTANCE hInstance, int nCmdShow, HWND& hWnd) {
     throw std::exception("Where is your 'ATOM' !");
   }
 
-  hWnd = CreateWindowExW(0, L"kamen.minecraft.launcher", L"MinecraftLauncher",
-                         WS_OVERLAPPEDWINDOW, 0, 0, 800, 600, NULL, NULL,
-                         hInstance, nullptr);
+  hMainWindow = hWnd = CreateWindowExW(
+      0, L"kamen.minecraft.launcher", L"MinecraftLauncher", WS_OVERLAPPEDWINDOW,
+      0, 0, 800, 600, NULL, NULL, hInstance, nullptr);
 
   ShowWindow(hWnd, nCmdShow);
 }
 
 void Core::Destroy() { GdiplusShutdown(gdiplusToken); }
 
+inline void _TrackMouse(HWND hWnd) {
+  TRACKMOUSEEVENT trackEvent{};
+  trackEvent.cbSize = sizeof(TRACKMOUSEEVENT);
+  trackEvent.dwFlags = TME_LEAVE;
+  trackEvent.hwndTrack = hWnd;
+  TrackMouseEvent(&trackEvent);
+}
+
+void _OnButtonClick() {
+  MessageBoxW(hMainWindow, L"我被点击了🥵", L"受不了了", S_OK);
+}
+
 LRESULT Core::GlobalMessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam,
                                    LPARAM lParam) {
   static bool isInited = false;
+  static bool isMouseTracked = false;
   static Control::screen* screen;
   static Control::button* test;
 
@@ -43,18 +58,30 @@ LRESULT Core::GlobalMessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam,
     test->Create(RectF(100, 100, 200, 64));
     test->SetVisible(true);
     test->SetEnable(true);
-    test->SetContext(L"����~");
-    test->SetClickHandler([]() -> void {
-      if (true) cos(144);
-    });
+    test->SetContext(L"6");
+    test->SetClickHandler(&_OnButtonClick);
 
     screen->SetChild(test);
-    isInited = true;
+
+    _TrackMouse(hWnd);
+    isMouseTracked = isInited = true;
     return 0;
   }
 
   if (isInited) {
     screen->EventPrcessor(uMsg, wParam, lParam);
+  }
+
+  if (uMsg == WM_MOUSEMOVE) {
+    if (not isMouseTracked) {
+      _TrackMouse(hWnd);
+      isMouseTracked = true;
+    }
+  }
+
+  if (uMsg == WM_MOUSELEAVE) {
+    isMouseTracked = false;
+    return NULL;
   }
 
   if (uMsg == WM_ERASEBKGND) {

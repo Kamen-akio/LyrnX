@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="control\button.h" />
     <ClInclude Include="control\IInheritable.h" />
+    <ClInclude Include="control\native.h" />
     <ClInclude Include="control\object.h" />
     <ClInclude Include="control\screen.h" />
     <ClInclude Include="control\__index.h" />

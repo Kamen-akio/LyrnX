@@ -21,24 +21,50 @@ bool Control::screen::EventPrcessor(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     m_rcObject.Height = m_swapChain->GetBufferSize().Height;
   }
 
-  if ((WM_MOUSEFIRST <= uMsg && uMsg <= WM_MOUSELAST) or uMsg == WM_PAINT) {
-    bool result = false;
-    Graphics srcGrap(m_swapChain->GetDC());
-    srcGrap.Clear(Color::DarkMagenta);
+  if (WM_MOUSEFIRST <= uMsg && uMsg <= WM_MOUSELAST || uMsg == WM_MOUSELEAVE) {
+    CallObjectProc(uMsg, wParam, lParam);
+    return EventPrcessor(WM_PAINT, 0, 0);
+  }
 
-    _OnPaint(srcGrap);
-    if (uMsg == WM_PAINT) {
-      lParam = (LPARAM)(void*)&srcGrap;
-    } else {
-      result = EventPrcessor(WM_PAINT, 0, 0);
+  if (uMsg == WM_PAINT) {
+    bool result = false;
+    RenderContext* renderContext{};
+
+    renderContext = RenderBegin();
+
+    Graphics* srcGrap = renderContext->graphics;
+    srcGrap->Clear(Color::Gray);
+
+    result |= _OnPaint(*srcGrap) or
+              CallObjectProc(uMsg, wParam, (LPARAM)(void*)renderContext);
+
+    if (not result) {
+      return true;
     }
 
-    result = CallObjectProc(uMsg, wParam, lParam);
-    m_swapChain->InvalidateRect(m_rcObject);
-    m_swapChain->Present();
-
-    return result;
+    RenderEnd(renderContext);
+    return true;
   }
 
   return ((object*)this)->EventPrcessor(uMsg, wParam, lParam);
+}
+
+Control::RenderContext* Control::screen::RenderBegin(RectF rcTarget) {
+  auto presentRect = new RectF;
+  auto srcGrap = new Graphics(m_swapChain->GetDC());
+  return new RenderContext{this, srcGrap, rcTarget, presentRect};
+}
+
+void Control::screen::RenderEnd(RenderContext* context) {
+  if (m_swapChain->m_isResized) {
+    m_swapChain->InvalidateRect(m_rcObject);
+    m_swapChain->m_isResized = false;
+  }
+
+  m_swapChain->InvalidateRect(*context->presentRect);
+  m_swapChain->Present();
+
+  delete context->graphics;
+  delete context->presentRect;
+  delete context;
 }

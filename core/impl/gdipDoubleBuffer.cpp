@@ -14,10 +14,11 @@ static HBITMAP CreateVirtualBitmap(HDC hDC, int width, int height) {
   return CreateDIBSection(hDC, &bitmapInfo, DIB_RGB_COLORS, nullptr, NULL, 0);
 }
 
-Gdiplus::CDoubleBuffer::CDoubleBuffer(HWND hWnd) : m_hWindow(hWnd) {
+Gdiplus::CDoubleBuffer::CDoubleBuffer(HWND hWnd)
+    : m_hWindow(hWnd), m_isResized(false) {
   RECT rcWnd{};
 
-  auto a = GetWindowRect(hWnd, &rcWnd);
+  GetWindowRect(hWnd, &rcWnd);
   m_szWindow = SizeF(rcWnd.right - rcWnd.left, rcWnd.bottom - rcWnd.top);
 
   m_hVirtualDC = CreateCompatibleDC(NULL);
@@ -67,4 +68,6 @@ void Gdiplus::CDoubleBuffer::ResizeBuffer(SizeF szWnd) {
   m_szWindow.Width = szWnd.Width;
   m_szWindow.Height = szWnd.Height;
   // this->Present();
+
+  m_isResized = true;
 }

@@ -16,6 +16,9 @@ class screen : public object, public IInheritable {
   void Create(HWND hWnd);
   bool EventPrcessor(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+  RenderContext* RenderBegin(RectF rcTarget = {});
+  void RenderEnd(RenderContext*);
+
   protected:
   Core::CRenderManager* m_swapChain;
 };

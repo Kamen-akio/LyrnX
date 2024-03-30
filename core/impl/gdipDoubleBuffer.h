@@ -21,6 +21,9 @@ class CDoubleBuffer {
   void ResizeBuffer(SizeF szWnd);
   SizeF GetBufferSize() const;
 
+ public:
+  bool m_isResized;
+
  protected:
   HWND m_hWindow;
   SizeF m_szWindow;
