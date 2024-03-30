@@ -15,6 +15,17 @@ void Control::screen::Create(HWND hWnd) {
 }
 
 bool Control::screen::EventPrcessor(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+  static bool bFirstInit = false;
+  if (not bFirstInit) {
+    InitContext initContext{};
+    initContext.RenderTarget = this;
+
+    CallObjectProc(WM_CREATE, wParam, (LPARAM)&initContext);
+    // EventPrcessor(WM_CREATE, 0, 0);
+
+    bFirstInit = true;
+  }
+
   if (uMsg == WM_SIZE) {
     m_swapChain->ResizeBuffer(Gdiplus::SizeF(LOWORD(lParam), HIWORD(lParam)));
     m_rcObject.Width = m_swapChain->GetBufferSize().Width;

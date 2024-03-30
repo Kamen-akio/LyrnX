@@ -125,10 +125,17 @@ bool Control::object::HasFlags(ObjectFlagID flag) {
 bool Control::object::_OnPaint(Graphics &) { return false; }
 
 bool Control::object::EventPrcessor(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+
+  if (uMsg == WM_CREATE) {
+    auto data = (InitContext*)(void*)lParam;
+    m_renderScreen == data->RenderTarget;
+  }
+
   if (not m_bEnable or not IsVisible()) return false;
 
   if (uMsg == WM_MOUSEMOVE || uMsg == WM_MOUSELEAVE) {
-    return m_isMouseHover = HasFlags(MouseHover);
+    m_isMouseHover = HasFlags(MouseHover);
+    // return EventPrcessor();
   }
 
   if (uMsg == WM_LBUTTONDOWN) {

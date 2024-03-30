@@ -39,8 +39,9 @@ inline void _TrackMouse(HWND hWnd) {
   TrackMouseEvent(&trackEvent);
 }
 
-void _OnButtonClick() {
-  MessageBoxW(hMainWindow, L"我被点击了🥵", L"受不了了", S_OK);
+static void _OnButtonClick() {
+  Beep(rand()%0x7FFF, 1000);
+  // MessageBoxW(hMainWindow, L"我被点击了🥵", L"受不了了", S_OK);
 }
 
 LRESULT Core::GlobalMessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam,

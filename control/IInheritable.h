@@ -9,7 +9,7 @@ using namespace std;
 #define _CONTROL_INTERFACE_IINHERITABLE_H_
 
 namespace Control {
-class IInheritable {
+class IInheritable abstract {
  public:
   ~IInheritable() {
     if (m_childObject.empty()) return;
@@ -33,12 +33,11 @@ class IInheritable {
 
             continue;
           }
-          
+
           if (obj->HasFlags(Control::MouseHover)) {
             obj->ToggleFlags(Control::MouseHover);
             result |= obj->EventPrcessor(uMsg, wParam, lParam);
           }
-
         }
       }
 
@@ -50,12 +49,11 @@ class IInheritable {
     Graphics* srcGrap = renderContext->graphics;
 
     for (auto& obj : m_childObject) {
-      /*
       if (!targetArea.IsEmptyArea() &&
           not obj->GetRect().IntersectsWith(targetArea)) {
         continue;
       }
-      */
+      
 
       auto status =
           srcGrap->BeginContainer(obj->GetRect(), obj->GetRect(), UnitPixel);

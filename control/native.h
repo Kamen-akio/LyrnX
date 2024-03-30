@@ -13,6 +13,10 @@ typedef enum { Any, Click, User } EventHandlerID;
 
 typedef enum { MouseHover = 1, MouseDown } ObjectFlagID;
 
+typedef struct __tagInitContext {
+  void* RenderTarget;
+} InitContext;
+
 typedef struct __tagRenderContext {
   /*
   * As Control::screen class instance;

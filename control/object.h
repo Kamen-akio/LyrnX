@@ -76,6 +76,7 @@ class object {
   bool m_isLeftBtnDown = false;
 
   Bitmap* m_paintPaint = nullptr;
+  void* m_renderScreen = nullptr;
 
   unordered_map<int, vector<void*>> m_eventHandlerMap{};
 };
