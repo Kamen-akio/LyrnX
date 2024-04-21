@@ -1,25 +1,26 @@
 #pragma once
-#include "IInheritable.h"
-#include "object.h"
+#include "Frame.h"
+#ifndef _COMPONENT_SCREEN_H_
+#define _COMPONENT_SCREEN_H_
 
-#include "../core/renderManager.h"
-
-namespace Control {
-
-const int _CONTROL_SCREEN_ID_ = 2;
-
-class screen : public object, public IInheritable {
+namespace Component {
+class Screen : public Frame {
  public:
-  screen() : m_swapChain(nullptr){};
-  ~screen();
+  Screen();
+  ~Screen();
+  void Bind(HWND hWnd);
 
-  void Create(HWND hWnd);
-  bool EventPrcessor(UINT uMsg, WPARAM wParam, LPARAM lParam);
+ public:
+  void SetChild(ControlBase*);
+  LRESULT CallChildrenProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-  RenderContext* RenderBegin(RectF rcTarget = {});
-  void RenderEnd(RenderContext*);
+  LRESULT MessageProcess(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-  protected:
-  Core::CRenderManager* m_swapChain;
+  bool OnPaint(Graphics* presentGraphics);
+
+ protected:
+  HWND m_presentWnd;
 };
-}  // namespace Control
+}  // namespace Component
+
+#endif

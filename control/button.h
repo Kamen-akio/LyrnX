@@ -1,50 +1,27 @@
 #pragma once
-#include "object.h"
+#include "./Control.h"
 
-#ifndef _CONTROL_BUTTON_H_
-#define _CONTROL_BUTTON_H_
-
-namespace Control {
-
-const int _CONTROL_BUTTON_ID_ = 1;
+#ifndef _COMPONENT_BUTTON_H_
+namespace Component {
 
 typedef enum {
-  ButtonAlignment = 0,
-  ButtonLineAlignment = 1,
-} ButtonPrototypeID;
+  ButtonStatus_ButtonDown = 0b01,
+  ButtonStatus_ButtonOver = 0b10
+} __ButtonStatus;
 
-typedef enum {
-  ButtonInvalid = -1,
-
-  ButtonAlignmentNear = StringAlignmentNear,
-  ButtonAlignmentCenter,
-  ButtonAlignmentFar,
-
-  ButtonLineAlignmentNear = StringAlignmentNear,
-  ButtonLineAlignmentCenter,
-  ButtonLineAlignmentFar,
-} ButtonPrototype;
-
-class button : public object {
+class Button : public ControlBase {
  public:
-  button();
-  void SetClickHandler(templClickCallback*);
-  void SetPrototype(ButtonPrototypeID, ButtonPrototype);
-  ButtonPrototype GetPrototype(ButtonPrototypeID id) {
-    auto pair = m_prototype.find(id);
-    if (pair == m_prototype.end()) {
-      return ButtonInvalid;
-    }
+  Button();
+  ~Button();
 
-    return pair->second;
-  };
-
-  bool _OnPaint(Graphics&) override;
  public:
+  void SetContext(wstring context);
 
-  protected:
-  unordered_map<ButtonPrototypeID, ButtonPrototype> m_prototype{};
+  bool OnPaint(Graphics*);
+  LRESULT OnMouseEvent(UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+ protected:
+  wstring m_context;
 };
-}  // namespace Control
-
-#endif  // !_CONTROL_BUTTON_H_
+}  // namespace Component
+#endif  // !_COMPONENT_BUTTON_H_

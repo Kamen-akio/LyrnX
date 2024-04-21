@@ -1,8 +1,6 @@
 #pragma once
 #include <vector>
 
-using std::vector;
-
 #ifndef _IMPL_MULTIWAYTREE_H_
 #define _IMPL_MULTIWAYTREE_H_
 

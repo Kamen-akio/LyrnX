@@ -1,6 +1,7 @@
 #pragma once
 
-#include "./impl/gdipDoubleBuffer.h"
+#include "./impl/gdipExt.h"
+#include "./impl/dwmHelper.h"
 #include "./impl/multiwayTree.h"
 #include "./renderManager.h"
 

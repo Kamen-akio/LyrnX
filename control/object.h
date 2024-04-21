@@ -1,85 +1,55 @@
 #pragma once
 #include <Windows.h>
-#include <Windowsx.h>
 #include <gdiplus.h>
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
-#include "./native.h"
+#include "../core/renderManager.h"
 
+using Core::CRenderManager;
 using std::unordered_map;
 using std::vector;
 using std::wstring;
 
-#ifndef _CONTROL_OBJECT_H_
-#define _CONTROL_OBJECT_H_
+#ifndef _COMPONENT_OBJECT_
+#define _COMPONENT_OBJECT_
 
-namespace Control {
+#define WM_WNDSIZE WM_SIZE
 
-const int _CONTROL_ELEMENT_ID_ = 0;
+namespace Component {
+namespace PrototypeID {
+typedef enum __tagPrototypeID {
+  PrototypeIdGeneral_FontColor,
+  PrototypeIdGeneral_BackgroundColor,
+  PrototypeIdGeneral_BackgroundHoverColor,
+  PrototypeIdGeneral_BackgroundActiveColor
 
-class object {
+
+} PrototypeID;
+};
+class Object {
  public:
-  object();
-  ~object();
+  Object();
+  ~Object();
+  void Destroy();
 
-  void Create(RectF);
-  bool IsMouseInObject(LPARAM);
+ public:
+  void SetPrototype(PrototypeID::PrototypeID, void*);
+  void DelPrototype(PrototypeID::PrototypeID);
+  void* GetPrototype(PrototypeID::PrototypeID);
 
-  void CallAllEventHandlers(EventHandlerID eventID);
-  void RegisterEventHandler(EventHandlerID eventID, void* callback);
-  void UnregisterEventHandler(EventHandlerID eventID, void* callback);
+  void InitObjectBase(CRenderManager* manager);
+  LRESULT MessageProcess(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-  void SetContext(wstring data) { m_context = data; };
-  wstring GetContext() const { return m_context; }
-
-  bool IsEnable() const { return m_bEnable; };
-  void SetEnable(bool status) { m_bEnable = status; };
-  bool IsVisible() const { return m_bVisible; };
-  void SetVisible(bool status) { m_bVisible = status; };
-
-  void SetPos(PointF);
-  void SetSize(SizeF);
-  void SetRect(RectF);
-  RectF GetRect() const { return m_rcObject; };
-
-  void SetPrototype(wstring key, wstring data);
-  wstring GetPrototype(wstring key) const {
-    auto pair = m_prototype.find(key);
-
-    if (pair == m_prototype.end()) {
-      return L"";
-    }
-
-    return pair->second;
-  };
-  void ToggleFlags(ObjectFlagID);
-  bool HasFlags(ObjectFlagID);
-
-  virtual bool _OnPaint(Graphics&);
-
-  // Event
-
-  bool EventPrcessor(UINT uMsg, WPARAM wParam, LPARAM lParam);
+  virtual void Init(){};
 
  protected:
-  RectF m_rcObject{};
-  wstring m_context{};
-  unordered_map<wstring, wstring> m_prototype{};
+  CRenderManager* m_renderManager;
 
-  bool m_bFocus = false;
-  bool m_bEnable = true;
-  bool m_bVisible = false;
-
-  bool m_isMouseHover = false;
-  bool m_isLeftBtnDown = false;
-
-  Bitmap* m_paintPaint = nullptr;
-  void* m_renderScreen = nullptr;
-
-  unordered_map<int, vector<void*>> m_eventHandlerMap{};
+  unordered_map<PrototypeID::PrototypeID, void*> m_protoMap;
 };
-}  // namespace Control
+}  // namespace Component
 
-#endif  // !_CONTROL_OBJECT_H_
+#endif  // !_COMPONENT_OBJECT_

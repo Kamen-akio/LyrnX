@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MinecraftLauncher", "MinecraftLauncher.vcxproj", "{066DAD7D-CC83-4B91-8B54-E5E7DE990101}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DEBUG_可以删除", "..\DEBUG_可以删除\DEBUG_可以删除.vcxproj", "{67F1B6FB-4EBB-49FD-AECC-0E8A5E6BEADD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{066DAD7D-CC83-4B91-8B54-E5E7DE990101}.Release|x64.Build.0 = Release|x64
 		{066DAD7D-CC83-4B91-8B54-E5E7DE990101}.Release|x86.ActiveCfg = Release|Win32
 		{066DAD7D-CC83-4B91-8B54-E5E7DE990101}.Release|x86.Build.0 = Release|Win32
+		{67F1B6FB-4EBB-49FD-AECC-0E8A5E6BEADD}.Debug|x64.ActiveCfg = Debug|x64
+		{67F1B6FB-4EBB-49FD-AECC-0E8A5E6BEADD}.Debug|x64.Build.0 = Debug|x64
+		{67F1B6FB-4EBB-49FD-AECC-0E8A5E6BEADD}.Debug|x86.ActiveCfg = Debug|Win32
+		{67F1B6FB-4EBB-49FD-AECC-0E8A5E6BEADD}.Debug|x86.Build.0 = Debug|Win32
+		{67F1B6FB-4EBB-49FD-AECC-0E8A5E6BEADD}.Release|x64.ActiveCfg = Release|x64
+		{67F1B6FB-4EBB-49FD-AECC-0E8A5E6BEADD}.Release|x64.Build.0 = Release|x64
+		{67F1B6FB-4EBB-49FD-AECC-0E8A5E6BEADD}.Release|x86.ActiveCfg = Release|Win32
+		{67F1B6FB-4EBB-49FD-AECC-0E8A5E6BEADD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

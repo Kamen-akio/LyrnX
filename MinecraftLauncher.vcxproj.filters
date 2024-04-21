@@ -21,13 +21,10 @@
     <ClInclude Include="MinecraftLauncher.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="core\core.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="core\main.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="core\impl\gdipDoubleBuffer.h">
+    <ClInclude Include="core\impl\gdipExt.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="core\renderManager.h">
@@ -36,22 +33,34 @@
     <ClInclude Include="core\impl\multiwayTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="control\object.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="control\IInheritable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="control\button.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="control\__index.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="control\screen.h">
+    <ClInclude Include="core\impl\stackBlur.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="control\native.h">
+    <ClInclude Include="control\Object.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="control\Control.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="control\Timer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="control\Frame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="control\Screen.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="control\Button.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="core\impl\dwmHelper.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,7 +71,7 @@
     <ClCompile Include="core\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="core\impl\gdipDoubleBuffer.cpp">
+    <ClCompile Include="core\impl\gdipExt.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="core\renderManager.cpp">
@@ -71,16 +80,28 @@
     <ClCompile Include="core\impl\multiwayTree.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="control\object.cpp">
+    <ClCompile Include="core\impl\stackBlur.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="control\IInheritable.cpp">
+    <ClCompile Include="control\Object.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="control\button.cpp">
+    <ClCompile Include="control\Control.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="control\screen.cpp">
+    <ClCompile Include="control\Timer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="control\Frame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="control\Screen.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="control\Button.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="core\impl\dwmHelper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

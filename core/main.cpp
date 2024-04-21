@@ -13,6 +13,7 @@ void Core::Init(HINSTANCE hInstance, int nCmdShow, HWND& hWnd) {
   WNDCLASSEXW classInfo{};
   classInfo.cbSize = sizeof WNDCLASSEXW;
   classInfo.cbClsExtra = 0;
+  classInfo.hCursor = LoadCursorW(NULL, IDC_ARROW);
   classInfo.hInstance = hInstance;
   classInfo.lpfnWndProc = GlobalMessageHandler;
   classInfo.lpszClassName = L"kamen.minecraft.launcher";
@@ -23,8 +24,9 @@ void Core::Init(HINSTANCE hInstance, int nCmdShow, HWND& hWnd) {
   }
 
   hMainWindow = hWnd = CreateWindowExW(
-      0, L"kamen.minecraft.launcher", L"MinecraftLauncher", WS_OVERLAPPEDWINDOW,
-      0, 0, 800, 600, NULL, NULL, hInstance, nullptr);
+      WS_EX_APPWINDOW, L"kamen.minecraft.launcher", L"",
+      WS_OVERLAPPEDWINDOW, 0,
+      0, 800, 600, NULL, NULL, hInstance, nullptr);
 
   ShowWindow(hWnd, nCmdShow);
 }
@@ -40,7 +42,7 @@ inline void _TrackMouse(HWND hWnd) {
 }
 
 static void _OnButtonClick() {
-  Beep(rand()%0x7FFF, 1000);
+  Beep(rand() % 0x7FFF, 1000);
   // MessageBoxW(hMainWindow, L"我被点击了🥵", L"受不了了", S_OK);
 }
 
@@ -48,29 +50,36 @@ LRESULT Core::GlobalMessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam,
                                    LPARAM lParam) {
   static bool isInited = false;
   static bool isMouseTracked = false;
-  static Control::screen* screen;
-  static Control::button* test;
+
+  static Core::CRenderManager* renderManager;
+  static Component::Screen screen{};
+  static Component::Button button{};
 
   if (uMsg == WM_CREATE) {
-    screen = new Control::screen;
-    screen->Create(hWnd);
+    // Core::Dwmapi::ToggleRenderInNCPAINT(hWnd, true);
+    // Core::Dwmapi::ToggleAnyEffectWindow(
+    //     hWnd, Dwmapi::ACCENT_ENABLE_ACRYLICBLURBEHIND, true);
+    // Core::Dwmapi::ExtendFrameIntoClientArea(hWnd);
 
-    test = new Control::button;
-    test->Create(RectF(100, 100, 200, 64));
-    test->SetVisible(true);
-    test->SetEnable(true);
-    test->SetContext(L"6");
-    test->SetClickHandler(&_OnButtonClick);
+    // auto test = Bitmap::FromFile(L"C:\\Users\\A Normal
+    // User\\Desktop\\GJ5nsoDaQAAbjg9.jpg");
 
-    screen->SetChild(test);
+    renderManager = new Core::CRenderManager(hWnd);
+
+    screen.Bind(hWnd);
+    button.SetControlRect({0, 0, 100, 100});
+    button.InitObjectBase(renderManager);
+    screen.SetChild(&button);
+    screen.InitObjectBase(renderManager);
 
     _TrackMouse(hWnd);
     isMouseTracked = isInited = true;
-    return 0;
+    // return 0;
   }
 
-  if (isInited) {
-    screen->EventPrcessor(uMsg, wParam, lParam);
+  auto result = screen.MessageProcess(uMsg, wParam, lParam);
+  if (screen.IsProcessed()) {
+    return result;
   }
 
   if (uMsg == WM_MOUSEMOVE) {
@@ -96,7 +105,8 @@ LRESULT Core::GlobalMessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam,
   }
 
   if (uMsg == WM_DESTROY) {
-    delete screen;
+    delete renderManager;
+    // delete screen;
   }
 
   return DefWindowProcW(hWnd, uMsg, wParam, lParam);

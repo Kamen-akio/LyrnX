@@ -1,57 +1,81 @@
-#include "button.h"
+#include "./Button.h"
+using namespace Component::PrototypeID;
 
-#include "screen.h"
+Component::Button::Button() {
+  m_context = L"°´Å¥";
 
-void _EventCallback();
-static Control::button* test{};
-
-Control::button::button() {
-  m_prototype[ButtonAlignment] = ButtonAlignmentCenter;
-  m_prototype[ButtonLineAlignment] = ButtonLineAlignmentCenter;
-
-  // Register Events
-
-  test = this;
-
-  RegisterEventHandler(Any, (void*)&_EventCallback);
+  SetPrototype(PrototypeIdGeneral_FontColor, new int(Color::Black));
+  SetPrototype(PrototypeIdGeneral_BackgroundColor, new int(Color::Blue));
+  SetPrototype(PrototypeIdGeneral_BackgroundHoverColor,
+               new int(Color::LightBlue));
+  SetPrototype(PrototypeIdGeneral_BackgroundActiveColor, new int(Color::Cyan));
 }
 
-void Control::button::SetClickHandler(templClickCallback* ptrFunc) {
-  m_eventHandlerMap[EventHandlerID::Click].push_back(ptrFunc);
-}
+Component::Button::~Button() {}
 
-void Control::button::SetPrototype(ButtonPrototypeID id, ButtonPrototype data) {
-  m_prototype[id] = data;
-}
+bool Component::Button::OnPaint(Graphics *grap) {
+  grap->SetSmoothingMode(SmoothingModeHighQuality);
 
-bool Control::button::_OnPaint(Graphics& srcMap) {
-  Graphics grap(m_paintPaint);
+  Font ftFront(L"Segoe UI", 16);
 
-  StringFormat stringFormat(StringFormatFlagsNoWrap, 0);
-  SolidBrush bgBrush(m_isLeftBtnDown  ? Color::BlueViolet
-                     : m_isMouseHover ? Color::DarkCyan
-                                      : Color::DarkKhaki);
-  SolidBrush ftBrush(Color::White);
-  Font ftFont(L"Segoe UI", 16);
+  SolidBrush ftBrush(*(int *)GetPrototype(PrototypeIdGeneral_FontColor));
+  SolidBrush bgBrush(
+      HasStatus(ButtonStatus_ButtonDown)
+          ? *(int *)GetPrototype(PrototypeIdGeneral_BackgroundActiveColor)
+      : HasStatus(ButtonStatus_ButtonOver)
+          ? *(int *)GetPrototype(PrototypeIdGeneral_BackgroundHoverColor)
+          : *(int *)GetPrototype(PrototypeIdGeneral_BackgroundColor));
 
-  stringFormat.SetAlignment((StringAlignment)m_prototype[ButtonAlignment]);
-  stringFormat.SetLineAlignment(
-      (StringAlignment)m_prototype[ButtonLineAlignment]);
+  StringFormat strFormat{};
+  strFormat.SetAlignment(StringAlignmentCenter);
+  strFormat.SetLineAlignment(StringAlignmentCenter);
 
-  grap.FillRectangle(&bgBrush, 0.f, 0.f, m_rcObject.Width, m_rcObject.Height);
-  grap.DrawString(m_context.c_str(), m_context.length(), &ftFont,
-                  RectF(0.f, 0.f, m_rcObject.Width, m_rcObject.Height),
-                  &stringFormat, &ftBrush);
+  // grap->FillRectangle(&bgBrush, 0.f, 0.f, GetControlSize().Width,
+  //                     GetControlSize().Height);
 
-  srcMap.DrawImage(m_paintPaint, m_rcObject);
+  GraphicsPath path{};
+  CreateRoundedPath(
+      path, RectF(0.f, 0.f, GetControlSize().Width, GetControlSize().Height),
+      16);
+  grap->FillPath(&bgBrush, &path);
+
+  grap->DrawString(
+      m_context.c_str(), (int)m_context.length(), &ftFront,
+      RectF(0.f, 0.f, GetControlSize().Width, GetControlSize().Height),
+      &strFormat, &ftBrush);
+
   return true;
 }
 
-void _EventCallback() {
-  return;
-  /*
-  auto b = test->GetRect();
-  ((Control::screen*)(test->m_lastContext).screen)
-      ->EventPrcessor(WM_PAINT, TRUE, (LPARAM)(void*)&b);
+LRESULT Component::Button::OnMouseEvent(UINT uMsg, WPARAM wParam,
+                                        LPARAM lParam) {
+  PointF ptMouse{GET_X_LPARAM(lParam) * 1.f, GET_Y_LPARAM(lParam) * 1.f};
+
+  if (uMsg == WM_MOUSELEAVE) {
+    DelStatus(ButtonStatus_ButtonOver);
+    m_renderManager->InvalidateRect(m_rcObject);
+  }
+
+  /* ~~~
+  if (not m_rcObject.Contains(ptMouse)) {
+    return NULL;
+  }
   */
+
+  if (uMsg == WM_LBUTTONDOWN) {
+    SetStatus(ButtonStatus_ButtonDown);
+    m_renderManager->InvalidateRect(m_rcObject);
+  }
+
+  if (uMsg == WM_LBUTTONUP) {
+    DelStatus(ButtonStatus_ButtonDown);
+    m_renderManager->InvalidateRect(m_rcObject);
+  }
+
+  if (uMsg == WM_MOUSEHOVER) {
+    SetStatus(ButtonStatus_ButtonOver);
+    m_renderManager->InvalidateRect(m_rcObject);
+  }
+
+  return FALSE;
 }

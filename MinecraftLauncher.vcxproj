@@ -142,28 +142,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="control\button.h" />
-    <ClInclude Include="control\IInheritable.h" />
-    <ClInclude Include="control\native.h" />
-    <ClInclude Include="control\object.h" />
-    <ClInclude Include="control\screen.h" />
+    <ClInclude Include="control\Button.h" />
+    <ClInclude Include="control\Control.h" />
+    <ClInclude Include="control\Frame.h" />
+    <ClInclude Include="control\Object.h" />
+    <ClInclude Include="control\Screen.h" />
+    <ClInclude Include="control\Timer.h" />
     <ClInclude Include="control\__index.h" />
     <ClInclude Include="core\core.h" />
     <ClInclude Include="core\environment.h" />
+    <ClInclude Include="core\impl\dwmHelper.h" />
     <ClInclude Include="core\impl\multiwayTree.h" />
     <ClInclude Include="core\main.h" />
-    <ClInclude Include="core\impl\gdipDoubleBuffer.h" />
+    <ClInclude Include="core\impl\gdipExt.h" />
     <ClInclude Include="core\renderManager.h" />
+    <ClInclude Include="core\impl\stackBlur.h" />
     <ClInclude Include="MinecraftLauncher.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="control\button.cpp" />
-    <ClCompile Include="control\IInheritable.cpp" />
-    <ClCompile Include="control\object.cpp" />
-    <ClCompile Include="control\screen.cpp" />
+    <ClCompile Include="control\Button.cpp" />
+    <ClCompile Include="control\Control.cpp" />
+    <ClCompile Include="control\Frame.cpp" />
+    <ClCompile Include="control\Object.cpp" />
+    <ClCompile Include="control\Screen.cpp" />
+    <ClCompile Include="control\Timer.cpp" />
+    <ClCompile Include="core\impl\dwmHelper.cpp" />
     <ClCompile Include="core\impl\multiwayTree.cpp" />
+    <ClCompile Include="core\impl\stackBlur.cpp" />
     <ClCompile Include="core\main.cpp" />
-    <ClCompile Include="core\impl\gdipDoubleBuffer.cpp" />
+    <ClCompile Include="core\impl\gdipExt.cpp" />
     <ClCompile Include="core\renderManager.cpp" />
     <ClCompile Include="MinecraftLauncher.cpp" />
   </ItemGroup>

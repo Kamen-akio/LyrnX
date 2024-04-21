@@ -4,24 +4,26 @@
 
 #include <vector>
 
-#include "./impl/gdipDoubleBuffer.h"
+#include "./impl/gdipExt.h"
 #include "./impl/multiwayTree.h"
-
-using Gdiplus::RectF;
-using std::vector;
 
 #ifndef _CORE_RENDERMANAGER_H_
 #define _CORE_RENDERMANAGER_H_
 
 namespace Core {
-class CRenderManager : public Gdiplus::CDoubleBuffer {
+class CRenderManager : public Gdiplus::DoubleBuffer {
  public:
   CRenderManager(HWND hWnd);
-  void InvalidateRect(RectF rect);
-  void Present();
+
+ public:
+  void ApplyOffset(Gdiplus::PointF pos = {0, 0});
+
+  void InvalidateRect(Gdiplus::RectF rect);
+  void PresentAll();
 
  private:
-  vector<RectF> m_layoutRectQueue;
+  std::vector<Gdiplus::RectF> m_layoutRectQueue;
+  Gdiplus::PointF m_ptOffset;
 };
 }  // namespace Core
 
